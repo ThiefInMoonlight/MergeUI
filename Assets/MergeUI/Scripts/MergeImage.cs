@@ -6,11 +6,72 @@ using UnityEngine.UI;
 
 namespace MergeUI
 {
-    public class MergeImage : Image
+    public class MergeImage : Image, IMerge
     {
-        #region Property
+        #region MergeUI
 
-        
+        public Mesh GetMesh()
+        {
+            if (isActiveAndEnabled)
+                return m_CachedMesh;
+
+            return null;
+        }
+
+        public void SetMergeRender(MergeUIRender obj)
+        {
+            _uiRender = obj;
+        }
+
+        public MergeUIRender GetMergeRender()
+        {
+            return _uiRender;
+        }
+
+        public string GetPath()
+        {
+            return _path;
+        }
+
+        public void SetPath(string path)
+        {
+            _path = path;
+        }
+
+        public bool PosCheck(bool dirty)
+        {
+            var tempPos = _transform.position;
+            var tempRot = _transform.rotation;
+            var tempScale = _transform.localScale;
+            
+            if (dirty)
+            {
+                _lastPos = tempPos;
+                _lastRot = tempRot;
+                _lastScale = tempScale;
+                return true;
+            }
+
+            if (_lastPos != tempPos && _lastRot != tempRot && _lastScale != tempScale)
+            {
+                _lastPos = tempPos;
+                _lastRot = tempRot;
+                _lastScale = tempScale;
+                return true;
+            }
+            
+            return false;
+        }
+
+        public Matrix4x4 GetMatrix()
+        {
+            return _transform.localToWorldMatrix;
+        }
+
+        public Material GetTempMaterial()
+        {
+            throw new System.NotImplementedException();
+        }
 
         #endregion
 
@@ -50,12 +111,12 @@ namespace MergeUI
             }
             else
             {
-                
+                _uiRender.SetDirty();
             }
         }
         
         /// <summary>
-        /// you can override this func to implement more uvs operation 
+        /// you can override this method to implement more uvs operation 
         /// </summary>
         protected virtual void AdjustMesh()
         {
@@ -90,6 +151,14 @@ namespace MergeUI
         private List<Vector4> _uv1s = new List<Vector4>();
 
         private static readonly Vector4 _defaultUV1 = new Vector4(0, 1, 0, 0);
+
+        private string _path;
+
+        private Vector3 _lastPos;
+
+        private Quaternion _lastRot;
+
+        private Vector3 _lastScale;
 
         #endregion
     }
