@@ -68,10 +68,19 @@ namespace MergeUI
             return _transform.localToWorldMatrix;
         }
 
+#if UNITY_EDITOR
+
         public Material GetTempMaterial()
         {
             throw new System.NotImplementedException();
         }
+        
+        public Transform GetTransform()
+        {
+            return transform;
+        }
+        
+#endif
 
         #endregion
 

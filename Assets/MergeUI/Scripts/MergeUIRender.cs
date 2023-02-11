@@ -39,7 +39,28 @@ namespace MergeUI
         {
             _dirty = true;
         }
+
+#if UNITY_EDITOR
+
+        public void ReSortingInEditor()
+        {
+            _merges.Sort((x, y) =>
+            {
+                var path1 = x.GetPath();
+                var path2 = y.GetPath();
+                return string.Compare(path1, path2);
+            });
+            
+            _graphics.Clear();
+            foreach (var merge in _merges)
+            {
+                var trans = merge.GetTransform();
+                var graphic = trans.GetComponent<Graphic>();
+                _graphics.Add(graphic);
+            }
+        }
         
+#endif
 
         #endregion
 

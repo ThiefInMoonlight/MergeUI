@@ -15,7 +15,7 @@ namespace MergeUI
         /// <param name="graphic"></param>
         /// <param name="renderObj"></param>
         /// <returns></returns>
-        public static string GetPath(GameObject graphic, GameObject renderObj)
+        public static string GetPath(Transform graphic, Transform renderObj)
         {
             if (_sb == null)
                 _sb = new StringBuilder();
