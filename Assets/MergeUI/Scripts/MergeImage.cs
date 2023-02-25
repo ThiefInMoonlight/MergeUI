@@ -40,17 +40,17 @@ namespace MergeUI
 
         public bool PosCheck(bool dirty)
         {
+            if (dirty)
+            {
+                _lastPos = _transform.position;
+                _lastRot = _transform.rotation;
+                _lastScale = _transform.localScale;
+                return true;
+            }
+            
             var tempPos = _transform.position;
             var tempRot = _transform.rotation;
             var tempScale = _transform.localScale;
-            
-            if (dirty)
-            {
-                _lastPos = tempPos;
-                _lastRot = tempRot;
-                _lastScale = tempScale;
-                return true;
-            }
 
             if (_lastPos != tempPos && _lastRot != tempRot && _lastScale != tempScale)
             {
@@ -85,6 +85,13 @@ namespace MergeUI
         #endregion
 
         #region Method
+
+        protected override void Start()
+        {
+            base.Start();
+            _mesh = new Mesh();
+            _mesh.hideFlags = meshHideflags;
+        }
 
         protected override void OnEnable()
         {
@@ -145,6 +152,8 @@ namespace MergeUI
         #endregion
         
         #region Field
+        
+        internal static readonly HideFlags meshHideflags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.HideInInspector;
 
         [System.NonSerialized]
         private MergeUIRender _uiRender;

@@ -61,8 +61,8 @@ Shader "Merge UI/MergeShader"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv0 = TRANSFORM_TEX(v.uv0, _MainTex);
-                o.uv1 = TRANSFORM_TEX(v.uv1, _SpriteTex);
+                o.uv0 = v.uv0;
+                o.uv1 = v.uv1;
                 o.color = v.color;// *_Color;
 
                 return o;
