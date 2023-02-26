@@ -16,6 +16,8 @@ namespace MergeUI
         protected void Start()
         {
             _transform = transform;
+            if (_emptyMesh == null)
+                _emptyMesh = new Mesh();
             
             Init();
         }
@@ -83,6 +85,7 @@ namespace MergeUI
         #endregion
 
         #region Method
+        
 
         private void Init()
         {
@@ -252,7 +255,7 @@ namespace MergeUI
         [System.NonSerialized]
         private Mesh _mesh;
 
-        private static Mesh _emptyMesh = new Mesh();
+        private static Mesh _emptyMesh;
 
         private Transform _transform;
 

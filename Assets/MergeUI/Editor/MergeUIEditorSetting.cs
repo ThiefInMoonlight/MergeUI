@@ -46,6 +46,22 @@ namespace MergeUI.Editor
 
         public static bool SaveAndGenerate()
         {
+            var setting = GetOrCreateSettings();
+            var folder = Path.GetDirectoryName(setting._runtimeAssetPath);
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            foreach (var editorAtlasInfo in setting._objs)
+            {
+                if (editorAtlasInfo._atlas == null || editorAtlasInfo._mat == null ||
+                    string.IsNullOrEmpty(editorAtlasInfo._field))
+                {
+                    EditorUtility.DisplayDialog("Merge UI Setting Save Failed",
+                        "Property is null or string is empty, pls check", "yes");
+                    return false;
+                }
+            }
+            
             return true;
         }
     }

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MergeUIAtlas
+  serializedVersion: 2
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 7288a82860dd34643a64d8f0cd4221d5, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 09230e90ea764cc418f65737d891852c, type: 3}
+  - {fileID: 21300000, guid: 848102b113e228044adf90536161f421, type: 3}
+  - {fileID: 21300000, guid: 122b4225c9066fb4e89926b23696d835, type: 3}
+  - {fileID: 21300000, guid: e302ebfad12b962478cd4906a1d75d1b, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - GrandAssassin_3
+  - GradnAssassin_3
+  - GrandAssassin_1
+  - GrandAssassin_2
+  m_RenderDataMap: {}
+  m_Tag: MergeUIAtlas
+  m_IsVariant: 0
+  m_IsPlaceholder: 0
