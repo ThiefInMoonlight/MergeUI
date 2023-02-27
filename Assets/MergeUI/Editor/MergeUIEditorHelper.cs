@@ -1,7 +1,11 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using UnityEditor.U2D;
 using UnityEngine;
+using UnityEngine.U2D;
 using UnityEngine.UI;
 
 namespace MergeUI.Editor
@@ -14,6 +18,38 @@ namespace MergeUI.Editor
             PrefabStage.prefabSaved -= OnPrefabStageSaved;
             PrefabStage.prefabSaved += OnPrefabStageSaved;
         }
+
+        #region Inerface
+
+        public static MergeUIAtlasInfo ParseRuntimeData(SpriteAtlas atlas, List<MergeUIEditorSettingAtlasInfo> list)
+        {
+            var atlasInfo = new MergeUIAtlasInfo();
+            foreach (var data in list)
+            {
+                var matInfo = new MergeUIMatInfo();
+                var mat = data._mat;
+                var matPath = AssetDatabase.GetAssetPath(mat);
+                matInfo.MaterialField = data._field;
+                matInfo.MaterialPath = matPath;
+                atlasInfo.MatInfos.Add(matInfo);
+            }
+
+            atlasInfo.AtlasName = atlas.name;
+            atlasInfo.AtlasPath = AssetDatabase.GetAssetPath(atlas);
+            atlasInfo.FirstSpriteInAtlas = GetFirstImageInAtlas(atlas);
+            
+            return atlasInfo;
+        }
+        
+        public static void ShowSaveFailedDialog(string str)
+        {
+            EditorUtility.DisplayDialog("Merge UI Setting Save Failed",
+                str, "yes");
+        }
+
+        #endregion
+
+        #region Method
 
         private static void OnPrefabStageSaved(GameObject obj)
         {
@@ -78,6 +114,65 @@ namespace MergeUI.Editor
             return true;
         }
 
+        private static string GetFirstImageInAtlas(SpriteAtlas atlas)
+        {
+            var atlasPacks = atlas.GetPackables();
+            if (atlasPacks.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            // get first packed image in atlas, and get its name
+            foreach (var pack in atlasPacks)
+            {
+                var path = AssetDatabase.GetAssetPath(pack);
+                // folder : get first image in it
+                if (Directory.Exists(path))
+                {
+                    var result = SearchPackableInFolder(path, out var image);
+                    if (result)
+                        return image;
+                }
+                // image : get its name
+                else
+                {
+                    return GetPackableFileName(path);
+                }
+            }
+            
+            Debug.LogError($"[MergeUI] {atlas.name} cannot get valid packable Object data, pls check");
+            // search failed
+            return string.Empty;
+        }
+
+        private static bool SearchPackableInFolder(string folderPath, out string image)
+        {
+            var files = Directory.GetFiles(folderPath);
+            foreach (var path in files)
+            {
+                if (!Directory.Exists(path))
+                {
+                    image = GetPackableFileName(path);
+                    return true;
+                }
+                else
+                {
+                    var result = SearchPackableInFolder(path, out image);
+                    if (result)
+                        return true;
+                }
+            }
+
+            image = string.Empty;
+            return false;
+        }
+
+        private static string GetPackableFileName(string path)
+        {
+            return Path.GetFileNameWithoutExtension(path);
+        }
+
+        #endregion
 
 
         private static StringBuilder _sb = new StringBuilder();
