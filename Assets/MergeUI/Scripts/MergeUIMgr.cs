@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using PlasticGui;
 using UnityEngine;
@@ -21,6 +22,8 @@ namespace MergeUI
             }
         }
 
+        public bool IsDebug => IsDebug;
+
         public void Init(bool debugModule, MergeUISetting setting, Func<string, Material> getMatFunc)
         {
             _debug = debugModule;
@@ -32,13 +35,23 @@ namespace MergeUI
                 return;
             }
 
+            MergeUIAutoAtlasLoader.Init(getMatFunc);
+            
+            InitAtlasInfo(setting);
 
             _init = true;
         }
 
         public void DeInit()
         {
+            MergeUIAutoAtlasLoader.DeInit();
             _init = false;
+        }
+
+        public bool GetAtlasInfo(string atlasName, out MergeUIAtlasInfo atlasInfo)
+        {
+            var result = _atlasInfoDict.TryGetValue(atlasName, out atlasInfo);
+            return result;
         }
 
         /// <summary>
@@ -77,6 +90,22 @@ namespace MergeUI
 
         #endregion
 
+        #region Method
+
+        private void InitAtlasInfo(MergeUISetting setting)
+        {
+            _atlas = new List<string>();
+            _atlasInfoDict = new Dictionary<string, MergeUIAtlasInfo>();
+            foreach (var atlasInfo in setting.AtlasInfos)
+            {
+                var name = atlasInfo.AtlasName;
+                _atlas.Add(name);
+                _atlasInfoDict[name] = atlasInfo;
+            }
+        }
+
+        #endregion
+
 
         #region Field
 
@@ -91,6 +120,8 @@ namespace MergeUI
         private Func<string, Material> _getMatFunc;
 
         private List<string> _atlas;
+
+        private Dictionary<string, MergeUIAtlasInfo> _atlasInfoDict;
 
         #endregion
     }
