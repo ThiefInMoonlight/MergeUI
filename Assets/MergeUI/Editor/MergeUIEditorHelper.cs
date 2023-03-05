@@ -59,11 +59,11 @@ namespace MergeUI.Editor
             if(stage == null)
                 return;
             
-            var renders = obj.GetComponentsInChildren<MergeUIRender>();
+            var renders = obj.GetComponentsInChildren<MergeUIRender>(true);
             if (renders.Length == 0)
                 return;
 
-            var mergeUis = obj.GetComponentsInChildren<IMerge>();
+            var mergeUis = obj.GetComponentsInChildren<IMerge>(true);
             if(mergeUis.Length == 0)
                 return;
 

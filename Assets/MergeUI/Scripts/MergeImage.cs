@@ -13,7 +13,7 @@ namespace MergeUI
         public Mesh GetMesh()
         {
             if (isActiveAndEnabled)
-                return m_CachedMesh;
+                return _mesh;
 
             return null;
         }
@@ -42,15 +42,15 @@ namespace MergeUI
         {
             if (dirty)
             {
-                _lastPos = _transform.position;
-                _lastRot = _transform.rotation;
-                _lastScale = _transform.localScale;
+                _lastPos = GetTransform().position;
+                _lastRot = GetTransform().rotation;
+                _lastScale = GetTransform().localScale;
                 return true;
             }
             
-            var tempPos = _transform.position;
-            var tempRot = _transform.rotation;
-            var tempScale = _transform.localScale;
+            var tempPos = GetTransform().position;
+            var tempRot = GetTransform().rotation;
+            var tempScale = GetTransform().localScale;
 
             if (_lastPos != tempPos && _lastRot != tempRot && _lastScale != tempScale)
             {
@@ -65,7 +65,7 @@ namespace MergeUI
 
         public Matrix4x4 GetMatrix()
         {
-            return _transform.localToWorldMatrix;
+            return GetTransform().localToWorldMatrix;
         }
 
 #if UNITY_EDITOR
@@ -77,7 +77,10 @@ namespace MergeUI
         
         public Transform GetTransform()
         {
-            return transform;
+            if (_transform == null)
+                _transform = transform;
+            
+            return _transform;
         }
         
 #endif
@@ -89,14 +92,37 @@ namespace MergeUI
         protected override void Start()
         {
             base.Start();
-            _mesh = new Mesh();
-            _mesh.hideFlags = meshHideflags;
+            if (_uiRender != null)
+            {
+                _uiRender.SetDirty();
+            }
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            _transform = transform;
+            if (_uiRender != null)
+            {
+                _uiRender.SetDirty();
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            if (_uiRender != null)
+            {
+                _uiRender.SetDirty();
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (_uiRender != null)
+            {
+                _uiRender.SetDirty();
+            }
         }
 
         #endregion
@@ -105,6 +131,12 @@ namespace MergeUI
 
         protected override void UpdateGeometry()
         {
+            if (_mesh == null)
+            {
+                _mesh = new Mesh();
+                _mesh.hideFlags = _meshHideflags;
+            }
+            
             if (rectTransform != null && rectTransform.rect.width >= 0 && rectTransform.rect.height >= 0)
                 OnPopulateMesh(_vertexHelper);
             else
@@ -153,9 +185,9 @@ namespace MergeUI
         
         #region Field
         
-        internal static readonly HideFlags meshHideflags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.HideInInspector;
+        internal static readonly HideFlags _meshHideflags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.HideInInspector;
 
-        [System.NonSerialized]
+        [SerializeField]
         private MergeUIRender _uiRender;
         
         [System.NonSerialized]

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,15 +14,28 @@ namespace MergeUI
         
         public Graphic[] graphicRecords;
         
+
         protected void Start()
         {
-            _transform = transform;
-            if (_emptyMesh == null)
-                _emptyMesh = new Mesh();
-            
-            Init();
+            if(_init)
+                Init();
         }
-        
+
+        protected void OnEnable()
+        {
+            _transform = transform;
+        }
+
+        private void OnDisable()
+        {
+            _meshRender.enabled = false;
+        }
+
+        protected void OnDestroy()
+        {
+            _meshRender.enabled = false;
+        }
+
         #region Interface
 
         public void Register(Graphic graphic, IMerge merge)
@@ -40,6 +54,11 @@ namespace MergeUI
         public void SetDirty()
         {
             _dirty = true;
+
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                UpdateMesh();
+#endif
         }
 
 #if UNITY_EDITOR
@@ -91,6 +110,12 @@ namespace MergeUI
 
         private void Init()
         {
+            _transform = transform;
+            if (_emptyMesh == null)
+                _emptyMesh = new Mesh();
+
+            _transform = transform;
+            
             _graphics = new List<Graphic>();
             _merges = new List<IMerge>();
             if (graphicRecords == null || graphicRecords.Length == 0)
@@ -128,10 +153,14 @@ namespace MergeUI
             _mesh.hideFlags = MeshHideflags;
 
             _dirty = true;
+            _init = true;
         }
 
         private void UpdateMesh()
         {
+            if(!_init)
+                Init();
+            
             var count = _graphics.Count;
             if (_graphics.Count != _merges.Count)
             {
@@ -271,6 +300,8 @@ namespace MergeUI
             HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.HideInInspector;
 
         private CombineInstance[] _combineInstances;
+
+        private bool _init = false;
 
         #endregion
     }
