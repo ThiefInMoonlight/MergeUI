@@ -17,6 +17,8 @@ namespace MergeUI.Editor
         {
             PrefabStage.prefabSaved -= OnPrefabStageSaved;
             PrefabStage.prefabSaved += OnPrefabStageSaved;
+            EditorApplication.playModeStateChanged -= OnPlayModeStateChange;
+            EditorApplication.playModeStateChanged += OnPlayModeStateChange;
         }
 
         #region Inerface
@@ -27,9 +29,9 @@ namespace MergeUI.Editor
             foreach (var data in list)
             {
                 var matInfo = new MergeUIMatInfo();
-                var mat = data._mat;
+                var mat = data.Mat;
                 var matPath = AssetDatabase.GetAssetPath(mat);
-                matInfo.MaterialField = data._field;
+                matInfo.MaterialField = data.Field;
                 matInfo.MaterialPath = matPath;
                 atlasInfo.MatInfos.Add(matInfo);
             }
@@ -170,6 +172,33 @@ namespace MergeUI.Editor
         private static string GetPackableFileName(string path)
         {
             return Path.GetFileNameWithoutExtension(path);
+        }
+        
+        /// <summary>
+        /// when stop play, reset all material Texture to null
+        /// </summary>
+        /// <param name="state"></param>
+        private static void OnPlayModeStateChange(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.ExitingPlayMode)
+            {
+                return;
+            }
+
+            var setting = MergeUIEditorSetting.GetSettings();
+            if(setting == null)
+                return;
+            
+            if(setting.AtlasInfos == null)
+                return;
+
+            foreach (var atlasInfo in setting.AtlasInfos)
+            {
+                if(atlasInfo.Mat == null || string.IsNullOrEmpty(atlasInfo.Field))
+                    continue;
+                
+                atlasInfo.Mat.SetTexture(atlasInfo.Field, null);
+            }
         }
 
         #endregion

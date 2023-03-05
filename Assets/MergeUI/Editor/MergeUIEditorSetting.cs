@@ -12,29 +12,35 @@ namespace MergeUI.Editor
     public class MergeUIEditorSetting : ScriptableObject
     {
         [NonSerialized]
-        public static readonly string _path = "Assets/Editor/MergeUIEditorSetting.asset";
+        public static readonly string Path = "Assets/Editor/MergeUIEditorSetting.asset";
         [SerializeField]
-        public string _runtimeAssetPath;
+        public string RuntimeAssetPath;
 
-        public List<MergeUIEditorSettingAtlasInfo> _objs;
+        public List<MergeUIEditorSettingAtlasInfo> AtlasInfos;
 
         public MergeUIEditorSetting()
         {
-            _runtimeAssetPath = "Assets/Resources/MergeUISetting.asset";
-            _objs = new List<MergeUIEditorSettingAtlasInfo>();
+            RuntimeAssetPath = "Assets/Resources/MergeUISetting.asset";
+            AtlasInfos = new List<MergeUIEditorSettingAtlasInfo>();
+        }
+        
+        internal static MergeUIEditorSetting GetSettings()
+        {
+            var settings = AssetDatabase.LoadAssetAtPath<MergeUIEditorSetting>(Path);
+            return settings;
         }
         
         internal static MergeUIEditorSetting GetOrCreateSettings()
         {
-            var settings = AssetDatabase.LoadAssetAtPath<MergeUIEditorSetting>(_path);
+            var settings = AssetDatabase.LoadAssetAtPath<MergeUIEditorSetting>(Path);
             if (settings == null)
             {
-                var folder = Path.GetDirectoryName(_path);
+                var folder = System.IO.Path.GetDirectoryName(Path);
                 if (!Directory.Exists(folder))
                     Directory.CreateDirectory(folder);
                 
                 settings = ScriptableObject.CreateInstance<MergeUIEditorSetting>();
-                AssetDatabase.CreateAsset(settings, _path);
+                AssetDatabase.CreateAsset(settings, Path);
                 AssetDatabase.SaveAssets();
             }
             return settings;
@@ -48,22 +54,22 @@ namespace MergeUI.Editor
         public static bool SaveAndGenerate()
         {
             var setting = GetOrCreateSettings();
-            var folder = Path.GetDirectoryName(setting._runtimeAssetPath);
+            var folder = System.IO.Path.GetDirectoryName(setting.RuntimeAssetPath);
             if (!Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
             var dict = new Dictionary<SpriteAtlas, List<MergeUIEditorSettingAtlasInfo>>();
 
-            foreach (var editorAtlasInfo in setting._objs)
+            foreach (var editorAtlasInfo in setting.AtlasInfos)
             {
-                if (editorAtlasInfo._atlas == null || editorAtlasInfo._mat == null ||
-                    string.IsNullOrEmpty(editorAtlasInfo._field))
+                if (editorAtlasInfo.Atlas == null || editorAtlasInfo.Mat == null ||
+                    string.IsNullOrEmpty(editorAtlasInfo.Field))
                 {
                     MergeUIEditorHelper.ShowSaveFailedDialog("Property is null or string is empty, pls check");
                     return false;
                 }
 
-                var atlas = editorAtlasInfo._atlas;
+                var atlas = editorAtlasInfo.Atlas;
                 if (!dict.ContainsKey(atlas))
                 {
                     dict.Add(atlas, new List<MergeUIEditorSettingAtlasInfo>());
@@ -71,7 +77,7 @@ namespace MergeUI.Editor
                 dict[atlas].Add(editorAtlasInfo);
             }
 
-            var asset = MergeUISetting.GetOrCreateSettings(setting._runtimeAssetPath);
+            var asset = MergeUISetting.GetOrCreateSettings(setting.RuntimeAssetPath);
             foreach (var kv in dict)
             {
                 var atlas = kv.Key;
@@ -92,15 +98,15 @@ namespace MergeUI.Editor
     [Serializable]
     public class MergeUIEditorSettingAtlasInfo
     {
-        public SpriteAtlas _atlas;
-        public Material _mat;
-        public string _field;
+        public SpriteAtlas Atlas;
+        public Material Mat;
+        public string Field;
 
         public MergeUIEditorSettingAtlasInfo()
         {
-            _atlas = null;
-            _mat = null;
-            _field = "_MainTex";
+            Atlas = null;
+            Mat = null;
+            Field = "_MainTex";
         }
     }
 
