@@ -60,6 +60,8 @@ namespace MergeUI
                 var graphic = trans.GetComponent<Graphic>();
                 _graphics.Add(graphic);
             }
+
+            graphicRecords = _graphics.ToArray();
         }
         
 #endif
@@ -210,7 +212,7 @@ namespace MergeUI
 
             var path = merge.GetPath();
             highIndex = _graphics.Count - 1;
-            while (lowIndex <= highIndex)
+            while (lowIndex < highIndex)
             {
                 midIndex = (lowIndex + highIndex) / 2;
                 var compareMerge = _merges[midIndex];
@@ -261,9 +263,9 @@ namespace MergeUI
 
         private bool _dirty;
 
-        private List<Graphic> _graphics;
+        private List<Graphic> _graphics = new List<Graphic>();
 
-        private List<IMerge> _merges;
+        private List<IMerge> _merges = new List<IMerge>();
 
         internal static readonly HideFlags MeshHideflags = 
             HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor | HideFlags.HideInInspector;

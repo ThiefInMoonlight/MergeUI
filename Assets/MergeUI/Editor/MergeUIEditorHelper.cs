@@ -55,6 +55,10 @@ namespace MergeUI.Editor
 
         private static void OnPrefabStageSaved(GameObject obj)
         {
+            var stage = PrefabStageUtility.GetCurrentPrefabStage();
+            if(stage == null)
+                return;
+            
             var renders = obj.GetComponentsInChildren<MergeUIRender>();
             if (renders.Length == 0)
                 return;
@@ -79,18 +83,18 @@ namespace MergeUI.Editor
                 render.ReSortingInEditor();
             }
 
-            PrefabUtility.SavePrefabAsset(obj);
+            PrefabUtility.SaveAsPrefabAsset(obj, stage.assetPath);
         }
 
         private static bool ResetMergeData(IMerge merge)
         {
             var trans = merge.GetTransform();
             var root = trans;
-            MergeUIRender render = null;
-            while (render != null || root == null)
+            MergeUIRender render = root.GetComponent<MergeUIRender>();
+            while (render == null && root != null)
             {
-                render = root.GetComponent<MergeUIRender>();
                 root = root.parent;
+                render = root.GetComponent<MergeUIRender>();
             }
 
             if (render == null)
@@ -99,7 +103,7 @@ namespace MergeUI.Editor
             var newPath = MergeUIMgr.GetPath(trans, root);
             var oldPath = merge.GetPath();
             var oldRender = merge.GetMergeRender();
-            var pathResult = string.Equals(trans, root);
+            var pathResult = string.Equals(newPath, oldPath);
             var renderResult = oldRender == render;
             if (pathResult && renderResult)
             {
@@ -110,8 +114,8 @@ namespace MergeUI.Editor
             var graphic = trans.GetComponent<Graphic>();
             if (oldRender != null)
                 oldRender.UnRegister(graphic, merge);
-            render.Register(graphic, merge);
             merge.SetPath(newPath);
+            render.Register(graphic, merge);
             merge.SetMergeRender(render);
             return true;
         }

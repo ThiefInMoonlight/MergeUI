@@ -78,6 +78,8 @@ namespace MergeUI
                 {
                     _sb.Insert(0, index);
                 }
+
+                root = root.parent;
             }
 
             if (root == null)
