@@ -15,9 +15,11 @@ namespace MergeUI
         void SetPath(string path);
         bool PosCheck(bool dirty);
         Matrix4x4 GetMatrix();
+        Transform GetTransform();
 #if UNITY_EDITOR
         Material GetTempMaterial();
-        Transform GetTransform();
+        MeshFilter GetTempMeshFilter();
+        MeshRenderer GetTempMeshRenderer();
 #endif
     }
 }

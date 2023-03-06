@@ -67,13 +67,6 @@ namespace MergeUI
         {
             return GetTransform().localToWorldMatrix;
         }
-
-#if UNITY_EDITOR
-
-        public Material GetTempMaterial()
-        {
-            throw new System.NotImplementedException();
-        }
         
         public Transform GetTransform()
         {
@@ -82,7 +75,49 @@ namespace MergeUI
             
             return _transform;
         }
-        
+
+#if UNITY_EDITOR
+
+        public Material GetTempMaterial()
+        {
+            if (_tempMat == null)
+            {
+                _tempMat = new Material( Shader.Find("Merge UI/Editor Image"));
+            }
+
+            Texture tex = null;
+            if (sprite != null)
+                tex = sprite.texture;
+            
+            _tempMat.SetTexture("_MainTex", tex);
+            return _tempMat;
+        }
+
+        public MeshFilter GetTempMeshFilter()
+        {
+            if (_tempMeshFilter == null)
+            {
+                _tempMeshFilter = gameObject.GetComponent<MeshFilter>();
+                if(_tempMeshFilter == null)
+                    _tempMeshFilter = gameObject.AddComponent<MeshFilter>();
+                _tempMeshFilter.hideFlags = _meshHideflags;
+            }
+            
+            return _tempMeshFilter;
+        }
+
+        public MeshRenderer GetTempMeshRenderer()
+        {
+            if (_tempMeshRenderer == null)
+            {
+                _tempMeshRenderer = gameObject.GetComponent<MeshRenderer>();
+                if(_tempMeshRenderer == null)
+                    _tempMeshRenderer = gameObject.AddComponent<MeshRenderer>();
+                _tempMeshRenderer.hideFlags = _meshHideflags;
+            }
+            
+            return _tempMeshRenderer;
+        }
 #endif
 
         #endregion
@@ -209,6 +244,15 @@ namespace MergeUI
         private Quaternion _lastRot;
 
         private Vector3 _lastScale;
+
+#if UNITY_EDITOR
+
+        private Material _tempMat;
+
+        private MeshRenderer _tempMeshRenderer;
+
+        private MeshFilter _tempMeshFilter;
+#endif
 
         #endregion
     }

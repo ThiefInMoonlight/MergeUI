@@ -160,6 +160,13 @@ namespace MergeUI
         {
             if(!_init)
                 Init();
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                DrawMeshInPrefabStage();
+                return;
+            }
+#endif
             
             var count = _graphics.Count;
             if (_graphics.Count != _merges.Count)
@@ -267,7 +274,28 @@ namespace MergeUI
 
         private void DrawMeshInPrefabStage()
         {
-            
+            var count = _graphics.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                var graphic = _graphics[i];
+                var imerge = _merges[i];
+
+                var mesh = imerge.GetMesh();
+                var meshRenderer = imerge.GetTempMeshRenderer();
+                var meshFilter = imerge.GetTempMeshFilter();
+                var mat = imerge.GetTempMaterial();
+                if (mesh == null)
+                {
+                    meshRenderer.enabled = false;
+                    continue;
+                }
+
+                meshRenderer.enabled = true;
+                meshFilter.mesh = mesh;
+                meshRenderer.material = mat;
+                meshRenderer.sortingOrder = i;
+            }
         }
         
 #endif

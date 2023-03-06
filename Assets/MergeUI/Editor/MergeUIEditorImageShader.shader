@@ -3,8 +3,7 @@ Shader "Merge UI/Editor Image"
 {
     Properties
     {
-        _FontTex("Font Texture", 2D) = "white" {}
-        _MainTex("Atlas Texture", 2D) = "white" {}
+        _MainTex("Main Texture", 2D) = "black" {}
         _Color("Text Color", Color) = (1, 1, 1, 1)
     }
 
@@ -49,9 +48,6 @@ Shader "Merge UI/Editor Image"
                 float2 uv1 	: TEXCOORD1;
             };
 
-            sampler2D _FontTex;
-            float4 _FontTex_ST;
-
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
@@ -70,9 +66,7 @@ Shader "Merge UI/Editor Image"
 
             half4 frag(v2f i) : COLOR
             {
-                half4 result = i.color * i.uv1.x;
-                result.a *= (tex2D(_FontTex, i.uv0)).a;
-                result += i.uv1.y * i.color * tex2D(_MainTex, i.uv0);
+                half4 result = i.color * tex2D(_MainTex, i.uv0);
 
                 return result;
             }
