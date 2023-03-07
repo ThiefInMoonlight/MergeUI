@@ -53,7 +53,7 @@ namespace MergeUI
             var tempRot = GetTransform().rotation;
             var tempScale = GetTransform().localScale;
 
-            if (_lastPos != tempPos && _lastRot != tempRot && _lastScale != tempScale)
+            if (_lastPos != tempPos || _lastRot != tempRot || _lastScale != tempScale)
             {
                 _lastPos = tempPos;
                 _lastRot = tempRot;

@@ -15,8 +15,17 @@ public static class AutoInit
     {
         SpriteAtlasManager.atlasRequested -= AtlasRequested;
         SpriteAtlasManager.atlasRequested += AtlasRequested;
-        var mergeUISetting = Resources.Load<MergeUISetting>("MergeUISetting");
-        MergeUIMgr.I.Init(true, mergeUISetting, AssetDatabase.LoadAssetAtPath<Material>);
+        EditorApplication.playModeStateChanged -= PlayModeStateChange;
+        EditorApplication.playModeStateChanged += PlayModeStateChange;
+    }
+
+    private static void PlayModeStateChange(PlayModeStateChange state)
+    {
+        if (state == UnityEditor.PlayModeStateChange.EnteredPlayMode)
+        {
+            var mergeUISetting = Resources.Load<MergeUISetting>("MergeUISetting");
+            MergeUIMgr.I.Init(true, mergeUISetting, AssetDatabase.LoadAssetAtPath<Material>);
+        }
     }
 
     private static void AtlasRequested(string path, Action<SpriteAtlas> cb)

@@ -60,7 +60,7 @@ Shader "Merge UI/MergeShader"
             v2f vert(appdata_t v)
             {
                 v2f o;
-                o.vertex = v.vertex;
+                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv0 = v.uv0;
                 o.uv1 = v.uv1;
                 o.color = v.color;// *_Color;
