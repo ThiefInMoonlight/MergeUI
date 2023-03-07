@@ -9,6 +9,8 @@ namespace MergeUI.Editor
 {
     public class MergeUIEditorSettingUIRegister
     {
+        private static SerializedObject settings;
+        
         [SettingsProvider]
         public static SettingsProvider CreateMergeUIEditorSettingsProvider()
         {
@@ -16,26 +18,31 @@ namespace MergeUI.Editor
             {
                 label = "Merge UI",
                 guiHandler = OnProviderGui,
-                
+                deactivateHandler = OnDeactiveHandler
 
             };
             return provider;
         }
 
+        private static void OnDeactiveHandler()
+        {
+            settings = null;
+        }
+
         private static void OnProviderGui(string _)
         {
-            var settings = MergeUIEditorSetting.GetSerializedSettings();
+            if(settings == null)
+                settings = MergeUIEditorSetting.GetSerializedSettings();
 
             if (EditorGUILayout.DropdownButton(new GUIContent("Save&Generate"), FocusType.Passive))
             {
                 MergeUIEditorSetting.SaveAndGenerate();
             }
 
-            EditorGUILayout.PropertyField(settings.FindProperty("_runtimeAssetPath"),
+            EditorGUILayout.PropertyField(settings.FindProperty("RuntimeAssetPath"),
                 new GUIContent("Runtime Asset Path"));
-            EditorGUILayout.PropertyField(settings.FindProperty("_objs"), new GUIContent("objs"));
+            EditorGUILayout.PropertyField(settings.FindProperty("AtlasInfos"), new GUIContent("Atlas Infos"));
             settings.ApplyModifiedProperties();
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using MergeUI.Editor;
 using UnityEditor;
@@ -8,6 +9,7 @@ namespace MergeUI
 {
     public class MergeUISetting : ScriptableObject
     {
+        [SerializeField]
         public List<MergeUIAtlasInfo> AtlasInfos;
 
         public MergeUISetting()
@@ -32,6 +34,7 @@ namespace MergeUI
         }
     }
 
+    [Serializable]
     public class MergeUIAtlasInfo
     {
         public string AtlasName;
@@ -45,6 +48,7 @@ namespace MergeUI
         }
     }
 
+    [Serializable]
     public class MergeUIMatInfo
     {
         public string MaterialPath;

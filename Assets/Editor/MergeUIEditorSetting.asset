@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e6afdb630645feab75c57e94da2e76, type: 3}
   m_Name: MergeUIEditorSetting
   m_EditorClassIdentifier: 
-  _runtimeAssetPath: Assets/Resources/MergeUISetting.asset
-  _objs:
-  - _atlas: {fileID: 0}
-    _mat: {fileID: 0}
-    _field: 
+  RuntimeAssetPath: Assets/Resources/MergeUISetting.asset
+  AtlasInfos:
+  - Atlas: {fileID: 4343727234628468602, guid: 56e6d781e81f20444bfdf499da712d4e, type: 2}
+    Mat: {fileID: 2100000, guid: cad678a32faa82b4082d0e5d906063c2, type: 2}
+    Field: _MainTex

@@ -3,8 +3,7 @@ Shader "Merge UI/Editor Font"
 {
     Properties
     {
-        _MainTex("Font Texture", 2D) = "white" {}
-        _SpriteTex("Sprite Texture", 2D) = "white" {}
+        _MainTex("Font Texture", 2D) = "black" {}
         _Color("Text Color", Color) = (1, 1, 1, 1)
     }
 
@@ -52,17 +51,15 @@ Shader "Merge UI/Editor Font"
             sampler2D _MainTex;
             float4 _MainTex_ST;
 
-            sampler2D _SpriteTex;
-            float4 _SpriteTex_ST;
-
             uniform fixed4 _Color;
 
             v2f vert(appdata_t v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv0 = TRANSFORM_TEX(v.uv0, _MainTex);
-                o.uv1 = TRANSFORM_TEX(v.uv1, _SpriteTex);
+                o.vertex = v.vertex;
+                o.uv0 = v.uv0;
+                o.uv1 = v.uv1;
                 o.color = v.color;// *_Color;
 
                 return o;
@@ -72,7 +69,6 @@ Shader "Merge UI/Editor Font"
             {
                 half4 result = i.color * i.uv1.x;
                 result.a *= (tex2D(_MainTex, i.uv0)).a;
-                result += i.uv1.y * i.color * tex2D(_SpriteTex, i.uv0);
 
                 return result;
             }

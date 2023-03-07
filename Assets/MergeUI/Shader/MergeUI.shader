@@ -3,8 +3,8 @@ Shader "Merge UI/MergeShader"
 {
     Properties
     {
-        _MainTex("Font Texture", 2D) = "white" {}
-        _SpriteTex("Sprite Texture", 2D) = "white" {}
+        _FontTex("Font Texture", 2D) = "black" {}
+        _MainTex("Sprite Texture", 2D) = "black" {}
         _Color("Text Color", Color) = (1, 1, 1, 1)
     }
 
@@ -49,18 +49,18 @@ Shader "Merge UI/MergeShader"
                 float2 uv1 	: TEXCOORD1;
             };
 
+            sampler2D _FontTex;
+            float4 _FontTex_ST;
+
             sampler2D _MainTex;
             float4 _MainTex_ST;
-
-            sampler2D _SpriteTex;
-            float4 _SpriteTex_ST;
 
             uniform fixed4 _Color;
 
             v2f vert(appdata_t v)
             {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.vertex = v.vertex;
                 o.uv0 = v.uv0;
                 o.uv1 = v.uv1;
                 o.color = v.color;// *_Color;
@@ -71,8 +71,8 @@ Shader "Merge UI/MergeShader"
             half4 frag(v2f i) : COLOR
             {
                 half4 result = i.color * i.uv1.x;
-                result.a *= (tex2D(_MainTex, i.uv0)).a;
-                result += i.uv1.y * i.color * tex2D(_SpriteTex, i.uv0);
+                result.a *= (tex2D(_FontTex, i.uv0)).a;
+                result += i.uv1.y * i.color * tex2D(_MainTex, i.uv0);
 
                 return result;
             }

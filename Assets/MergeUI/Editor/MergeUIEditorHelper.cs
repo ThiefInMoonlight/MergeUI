@@ -99,24 +99,28 @@ namespace MergeUI.Editor
 
             if (render == null)
                 return false;
-
+            
+            var graphic = trans.GetComponent<Graphic>();
             var newPath = MergeUIMgr.GetPath(trans, root);
             var oldPath = merge.GetPath();
             var oldRender = merge.GetMergeRender();
+            var oldMat = graphic.material;
+            var newMat = render._material;
             var pathResult = string.Equals(newPath, oldPath);
             var renderResult = oldRender == render;
-            if (pathResult && renderResult)
+            var matResult = oldMat == newMat;
+            if (pathResult && renderResult && matResult)
             {
                 // no changes
                 return false;
             }
-
-            var graphic = trans.GetComponent<Graphic>();
+            
             if (oldRender != null)
                 oldRender.UnRegister(graphic, merge);
             merge.SetPath(newPath);
             render.Register(graphic, merge);
             merge.SetMergeRender(render);
+            graphic.material = newMat;
             return true;
         }
 
