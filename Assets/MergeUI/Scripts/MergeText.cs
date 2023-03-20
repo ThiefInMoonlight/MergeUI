@@ -213,6 +213,22 @@ namespace MergeUI
             _mesh.SetUVs(1, _uv1s);
         }
 
+        public override Material material {
+            get
+            {
+                #if UNITY_EDITOR
+                if (!Application.isPlaying)
+                    return GetTempMaterial();
+                #endif
+                
+                return base.material;
+            }
+            set
+            {
+                base.material = value;
+            } 
+        }
+
         #endregion
 
         #region Field

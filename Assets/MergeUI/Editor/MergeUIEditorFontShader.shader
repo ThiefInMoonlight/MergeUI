@@ -57,8 +57,7 @@ Shader "Merge UI/Editor Font"
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.vertex = v.vertex;
-                o.uv0 = v.uv0;
+                o.uv0 = v.uv0; 
                 o.uv1 = v.uv1;
                 o.color = v.color;// *_Color;
 
