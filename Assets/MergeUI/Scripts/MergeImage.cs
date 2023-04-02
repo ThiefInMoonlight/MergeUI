@@ -40,26 +40,35 @@ namespace MergeUI
 
         public bool PosCheck(bool dirty)
         {
+            var mtrans = GetTransform();
             if (dirty)
             {
-                _lastPos = GetTransform().position;
-                _lastRot = GetTransform().rotation;
-                _lastScale = GetTransform().localScale;
+                _lastPos = mtrans.localPosition;
+                _lastRot = mtrans.localRotation;
+                _lastScale = mtrans.lossyScale;
+                mtrans.hasChanged = false;
                 return true;
             }
+
+            if (!mtrans.hasChanged)
+            {
+                return false;
+            }
             
-            var tempPos = GetTransform().position;
-            var tempRot = GetTransform().rotation;
-            var tempScale = GetTransform().localScale;
+            var tempPos = mtrans.localPosition;
+            var tempRot = mtrans.localRotation;
+            var tempScale = mtrans.lossyScale;
 
             if (_lastPos != tempPos || _lastRot != tempRot || _lastScale != tempScale)
             {
                 _lastPos = tempPos;
                 _lastRot = tempRot;
                 _lastScale = tempScale;
+                mtrans.hasChanged = false;
                 return true;
             }
-            
+
+            mtrans.hasChanged = false;
             return false;
         }
 
@@ -70,7 +79,7 @@ namespace MergeUI
         
         public Transform GetTransform()
         {
-            if (_transform == null)
+            if (ReferenceEquals(_transform, null))
                 _transform = transform;
             
             return _transform;
@@ -80,7 +89,7 @@ namespace MergeUI
 
         public Material GetTempMaterial()
         {
-            if (_tempMat == null)
+            if (ReferenceEquals(_tempMat, null))
             {
                 _tempMat = new Material( Shader.Find("Merge UI/Editor Image"));
             }
@@ -95,11 +104,9 @@ namespace MergeUI
 
         public MeshFilter GetTempMeshFilter()
         {
-            if (_tempMeshFilter == null)
+            if (ReferenceEquals(_tempMeshFilter, null))
             {
-                _tempMeshFilter = gameObject.GetComponent<MeshFilter>();
-                if(_tempMeshFilter == null)
-                    _tempMeshFilter = gameObject.AddComponent<MeshFilter>();
+                _tempMeshFilter = gameObject.AddComponent<MeshFilter>();
                 _tempMeshFilter.hideFlags = _meshHideflags;
             }
             
@@ -108,11 +115,9 @@ namespace MergeUI
 
         public MeshRenderer GetTempMeshRenderer()
         {
-            if (_tempMeshRenderer == null)
+            if (ReferenceEquals(_tempMeshRenderer, null))
             {
-                _tempMeshRenderer = gameObject.GetComponent<MeshRenderer>();
-                if(_tempMeshRenderer == null)
-                    _tempMeshRenderer = gameObject.AddComponent<MeshRenderer>();
+                _tempMeshRenderer = gameObject.AddComponent<MeshRenderer>();
                 _tempMeshRenderer.hideFlags = _meshHideflags;
             }
             
@@ -166,7 +171,7 @@ namespace MergeUI
 
         protected override void UpdateGeometry()
         {
-            if (_mesh == null)
+            if (ReferenceEquals(_mesh, null))
             {
                 _mesh = new Mesh();
                 _mesh.hideFlags = _meshHideflags;
@@ -188,7 +193,7 @@ namespace MergeUI
             _vertexHelper.FillMesh(_mesh);
             AdjustMesh();
 
-            if (_uiRender == null)
+            if (ReferenceEquals(_uiRender, null))
             {
                 canvasRenderer.SetMesh(_mesh);
             }
@@ -214,6 +219,22 @@ namespace MergeUI
             }
             
             _mesh.SetUVs(1, _uv1s);
+        }
+
+        public override Texture mainTexture
+        {
+            get
+            {
+                if(ReferenceEquals(sprite, null))
+                    return s_WhiteTexture;
+
+                if (ReferenceEquals(material, null))
+                {
+                    return s_WhiteTexture;
+                }
+
+                return material.mainTexture;
+            }
         }
 
         #endregion

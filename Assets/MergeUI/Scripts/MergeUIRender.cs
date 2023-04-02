@@ -28,11 +28,17 @@ namespace MergeUI
 
         private void OnDisable()
         {
+            if(!_init)
+                return;
+            
             _meshRender.enabled = false;
         }
 
         protected void OnDestroy()
         {
+            if(!_init)
+                return;
+            
             _meshRender.enabled = false;
         }
 
@@ -91,9 +97,12 @@ namespace MergeUI
 
         protected void LateUpdate()
         {
-            foreach (var merge in _merges)
+            for(int i = 0; i <_merges.Count; i++)
             {
+                var merge = _merges[i];
                 _dirty = merge.PosCheck(_dirty);
+                if(_dirty)
+                    break;
             }
             
             if (_dirty)
@@ -204,7 +213,7 @@ namespace MergeUI
                 }
 
                 _combineInstances[i].mesh = mesh;
-                _combineInstances[i].transform = worldToLocalMatrix * imerge.GetMatrix();
+                _combineInstances[i].transform = imerge.GetMatrix();//worldToLocalMatrix * imerge.GetMatrix();
             }
 
             if (enableMeshCount == 0)

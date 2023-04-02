@@ -19,7 +19,6 @@ Shader "Merge UI/MergeShader"
         }
 
         Lighting Off
-        Cull Off
         ZTest Always
         ZWrite Off
         Blend SrcAlpha OneMinusSrcAlpha
@@ -48,14 +47,14 @@ Shader "Merge UI/MergeShader"
                 float2 uv0 	: TEXCOORD0;
                 float2 uv1 	: TEXCOORD1;
             };
-
+            CBUFFER_START(UnityPerMaterial)
             sampler2D _FontTex;
             float4 _FontTex_ST;
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-
             uniform fixed4 _Color;
+            CBUFFER_END
 
             v2f vert(appdata_t v)
             {
