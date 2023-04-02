@@ -1068,8 +1068,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d67b60c26e3ba44cab5efbcba7ffb19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObjectCount: 100
+  ObjectCount: 300
   mergeUI3d_button: {fileID: 474636786}
   mergeUIui_button: {fileID: 1239240303}
   normalui_button: {fileID: 862253569}
   enableUpdate: 1
+  enableRandomEnable: 0

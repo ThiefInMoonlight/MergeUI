@@ -20,7 +20,7 @@ public class AutoSet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!_init)
+        if(!_init || !NeedUpdate)
             return;
 
         foreach (var graphic in _images)
@@ -47,4 +47,6 @@ public class AutoSet : MonoBehaviour
     private Image[] _images;
 
     private Text[] _texts;
+
+    public bool NeedUpdate = false;
 }

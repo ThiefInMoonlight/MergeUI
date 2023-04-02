@@ -13,6 +13,7 @@ public class MainUI : MonoBehaviour
     public Button mergeUIui_button;
     public Button normalui_button;
     public bool enableUpdate = true;
+    public bool enableRandomEnable = false;
     
     
     // Start is called before the first frame update
@@ -72,7 +73,8 @@ public class MainUI : MonoBehaviour
         var prefab = Resources.Load<GameObject>(path);
         var root = GameObject.Instantiate(prefab);
         var content = root.transform.GetChild(0).gameObject;
-        content.AddComponent<AutoSet>();
+        var autoComp = content.AddComponent<AutoSet>();
+        autoComp.enabled = enableRandomEnable;
         
         
         var objects = new List<GameObject>();
