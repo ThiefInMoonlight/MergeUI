@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using MergeUI;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -31,6 +32,10 @@ public class MainUI : MonoBehaviour
         {
             ChangeUI(UIType.NormalUI);
         }));
+        
+        
+        if(!init)
+            Init();
     }
 
     // Update is called once per frame
@@ -60,6 +65,9 @@ public class MainUI : MonoBehaviour
     {
         if(init)
             return;
+        
+        var mergeUISetting = Resources.Load<MergeUISetting>("MergeUISetting");
+        MergeUIMgr.I.Init(true, mergeUISetting, AssetDatabase.LoadAssetAtPath<Material>);
 
         InitUI("MergeUI_3d", UIType.MegerUI_3D);
         InitUI("MergeUI_ui", UIType.MergeUI_UI);
@@ -96,10 +104,7 @@ public class MainUI : MonoBehaviour
     {
         if(type == currentUI)
             return;
-        
-        if(!init)
-            Init();
-        
+
         currentUI = type;
         foreach (var kv in _uiMenus)
         {
